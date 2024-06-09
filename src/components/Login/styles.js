@@ -89,4 +89,12 @@ export const InputContainer = styled.div`
         font-weight: 600;
         color: #000000;
     }
+
+    p {
+        font-size: 16px;
+        line-height: 80%;
+        color: #cf3057;
+        font-weight: 600;
+        height: 10px;
+    }
 `;

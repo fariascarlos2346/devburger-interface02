@@ -4,6 +4,7 @@ import * as yup from 'yup';
 
 import Full from '../../assets/full.svg';
 import { Button } from '../../containers/Button';
+import { api } from '../../services/api';
 
 import {
     Container,
@@ -17,19 +18,32 @@ import {
 export function Login() {
     const schema = yup
     .object({
-        email: yup.string().email().required(),
-        password: yup.string().min(6).required(),
+        email: yup
+        .string()
+        .email('Digite um e-mail válido')
+        .required('O e-mail é obrigatório'),
+        password: yup.string().min(6,'A senha deve ter pelo menos 6 caractere').required('Digite uma senha'),
     })
     .required();
 
     const {
         register,
         handleSubmit,
-        formState: { error },
+        formState: { errors },
     } = useForm({
       resolver: yupResolver(schema),
     });
-    const onSubmit = (data) => console.log(data);
+
+    console.log(errors);
+
+    const onSubmit = async (data) => {
+        const response = await api.post('/session', {
+            email: data.email,
+            password: data.password,
+        });
+
+        console.log(response);
+    };
 
     return (
         <Container>
@@ -47,11 +61,13 @@ export function Login() {
                     <InputContainer>
                         <label>Email</label>
                         <input type="email" {...register('email')}/>
+                        <p>{errors?.email?.message}</p>
                     </InputContainer>
 
                     <InputContainer>
                         <label>Senha</label>
                         <input type="password" {...register('password')}/>
+                        <p>{errors?.password?.message}</p>
                     </InputContainer>
                     <Button type="submit">Entrar</Button>
                 </Form>
